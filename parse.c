@@ -258,15 +258,16 @@ node_t *read_and_parse(void) {
  * Return value: none
  * (STUDENT TODO) */
 void cleanup(node_t *nptr) {
-    // Is it enough to free the node the function called upon?
 
     // we have reached a leaf. 
-    // we reached the farthest side of the tree. Free memory.
     if (nptr == NULL) {
-        free(nptr);
         return;
     }
+    // recurse to the left
     cleanup(nptr->children[0]);
+    // free memory for the current node!
+    free(nptr);
+    // recurse to the right
     cleanup(nptr->children[1]);
     return;
 }
