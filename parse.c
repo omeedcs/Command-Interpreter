@@ -265,9 +265,11 @@ void cleanup(node_t *nptr) {
     }
     // recurse to the left
     cleanup(nptr->children[0]);
+
+    cleanup(nptr->children[1]);
+
     // free memory for the current node!
     free(nptr);
     // recurse to the right
-    cleanup(nptr->children[1]);
     return;
 }
