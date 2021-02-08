@@ -93,7 +93,7 @@ static node_t *build_leaf(void) {
         }
     } else if (this_token->ttype == TOK_STR) {
         leaf->type = STRING_TYPE;
-        leaf->val.sval = malloc(strlen(this_token->repr));
+        leaf->val.sval = malloc(strlen(this_token->repr) + 1);
         strcpy(leaf->val.sval, this_token->repr);
         // leaf->val.sval = this_token->repr;
     } else if (this_token->ttype == TOK_FMT_SPEC) {
@@ -166,8 +166,8 @@ static node_t *build_exp(void) {
                 advance_lexer();
                 // 3) set right child to result of build exp.
                 internalNode->children[1] = build_exp();
-                }
             }
+        }
             advance_lexer();
             return internalNode;
         }
