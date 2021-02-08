@@ -298,9 +298,7 @@ void cleanup(node_t *nptr) {
     // free memory for the current node!
     free(nptr);
 
-    if (nptr->type == STRING_TYPE) {
-        free(nptr->val.sval);
-    }
+
 
 // NEED TO FREE STRINGS?
 
