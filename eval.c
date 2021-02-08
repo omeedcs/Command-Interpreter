@@ -39,8 +39,12 @@ static void infer_type(node_t *nptr) {
         if (nptr->type == STRING_TYPE) {
             nptr->type = BOOL_TYPE;
         }
-    } 
- 
+    }
+    if (nptr->tok == TOK_QUESTION) {
+        infer_type(nptr->children[2]);
+    }
+
+
     return;
 
 }
@@ -243,6 +247,12 @@ static void eval_node(node_t *(nptr)) {
             if (nptr->type == INT_TYPE) {
                 handle_error(ERR_TYPE);
             }
+        } else if (nptr->tok == TOK_QUESTION) {
+                if (nptr->children[0]->val.bval == 1) {
+                    nptr->val.ival = nptr->children[1]->val.ival;
+                } else {
+                    nptr->val.ival = nptr->children[2]->val.ival;
+                }
         }
         return;
 }

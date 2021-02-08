@@ -145,7 +145,19 @@ static node_t *build_exp(void) {
         // 2) move forward in the stream.
         advance_lexer();
 
-        
+        if (next_token->ttype == TOK_QUESTION) {
+            internalNode->children[0] = build_exp();
+            advance_lexer();
+            internalNode->node_type = NT_INTERNAL;
+            internalNode->tok = this_token->ttype;
+            advance_lexer();
+            internalNode->children[1] = build_exp();
+            advance_lexer();
+            advance_lexer();
+            internalNode->children[2] = build_exp();
+            advance_lexer();
+            return internalNode;
+        }
         // check if it is a leaf. 
         if (next_token->ttype == TOK_RPAREN) {
             internalNode = build_leaf();
