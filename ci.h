@@ -48,6 +48,9 @@ extern void finalize(void);
 /* Provided function to format & print the answer of an expression. */
 extern void format_and_print(node_t *);
 
+/* Provided function to print the (sub)tree from a given node. */
+extern void print_tree(node_t *);
+
 /* Provided function to initialize the lexer. The lexer will process the user
  * input and provide individual operators/operands as "tokens". These tokens 
  * will be accessible from the this_token and next_token variables. */

@@ -17,14 +17,12 @@ extern void finalize(void);
 
 static char input_line[MAX_LINE_CHARS];
 static int lptr;
-static char token[MAX_LINE_CHARS];
 static lexeme_t lex_array[2];
 static char printbuf[100];
 
 static const char CMD_START_CHAR = '@';
 static const char STRING_DELIMITER_CHAR = '\"';
 
-static const char *VALID_SCTS = "()?:+-*/%&|<>~_!#\n=";
 static const int NUM_SCTS = TOK_ASSIGN - TOK_LPAREN + 1;
 
 static const struct {

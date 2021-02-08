@@ -57,6 +57,8 @@ int logging(log_lev_t sev, char* msg) {
         case LOG_FATAL:
             terminate = true;
             break;
+        default:
+            break;
     }
     if (outfile != stdout && sev == LOG_ERROR) {
         fprintf(outfile, "\t[ERROR]\n");

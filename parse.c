@@ -86,10 +86,20 @@ static node_t *build_leaf(void) {
         leaf->val.ival = atoi(this_token->repr);
     } else if (this_token->ttype == TOK_TRUE || this_token->ttype == TOK_FALSE) {
         leaf->type = BOOL_TYPE;
-        leaf->val.bval = this_token->repr;
+        if (this_token->ttype == TOK_TRUE) {
+            leaf->val.bval = 1;
+        } else {
+            leaf->val.bval = 0;
+        }
     } else if (this_token->ttype == TOK_STR) {
         leaf->type = STRING_TYPE;
-        leaf->val.sval = this_token->repr;
+        leaf->val.sval = malloc(strlen(this_token->repr));
+        strcpy(leaf->val.sval, this_token->repr);
+        // leaf->val.sval = this_token->repr;
+    } else if (this_token->ttype == TOK_FMT_SPEC) {
+        leaf->type = FMT_TYPE;
+        // hmm, what goes here?
+        leaf->val.fval = this_token->repr[0];
     }
     return leaf;
 }
@@ -126,37 +136,42 @@ static node_t *build_exp(void) {
         // 1) construct the internal node
         node_t *internalNode = calloc(1, sizeof(node_t));
 
+        if (! internalNode) {
+            // handle memory allocation failure
+            logging(LOG_FATAL, "failed to allocate node");
+            return NULL;
+        }
+
         // 2) move forward in the stream.
         advance_lexer();
 
-
-        // 3) set left child to result of build exp.
-        internalNode->children[0] = build_exp(); 
-
-
-        // 4) advance in the stream
-        advance_lexer();
-
-        // 5) Check if the current token is an operator
-        if (is_binop(this_token->ttype) || is_unop(this_token->ttype)) {
-
-            // aha! It is an operator. Set nodes type and advance in the stream
-            internalNode->node_type = NT_INTERNAL;
-            internalNode->tok = this_token->ttype;
-            advance_lexer();
-
-            
-            // 6) set the right child to the result of build exp. 
-            internalNode->children[1] = build_exp();
-
-            // 7) one more advance before I return, we are at the last parenthesis
-            advance_lexer();
-        }
         
-        // 8) method is complete, return the internal node
-        return internalNode;
+        // check if it is a leaf. 
+        if (next_token->ttype == TOK_RPAREN) {
+            internalNode = build_leaf();
+        } else {
+            // we know it is not a leaf.
+            internalNode->node_type = NT_INTERNAL;
+
+            if (is_unop(this_token->ttype)) {
+                internalNode->tok = this_token->ttype;
+                advance_lexer();
+                internalNode->children[0] = build_exp(); 
+                advance_lexer();
+                return internalNode;
+            } else {
+                internalNode->children[0] = build_exp(); 
+                advance_lexer();
+                internalNode->tok = this_token->ttype;
+                advance_lexer();
+                // 3) set right child to result of build exp.
+                internalNode->children[1] = build_exp();
+                }
+            }
+            advance_lexer();
+            return internalNode;
+        }
     }
-}
 
 /* build_root() - construct the root of the AST for the current input
  * This function is provided to you. Use it as a reference for your code

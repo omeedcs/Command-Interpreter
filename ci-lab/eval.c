@@ -31,16 +31,14 @@ static void infer_type(node_t *nptr) {
     
     if (nptr->node_type == NT_INTERNAL) {
         nptr->type = nptr->children[0]->type;
-        nptr->type = nptr->children[1]->type;
         infer_type(nptr->children[0]);
         infer_type(nptr->children[1]);
         return;
     }
+}
 
     // getting a core dump?
 
-    return;
-}
 
 /* infer_root() - set the type of the root node based on the types of children
  * Parameter: A pointer to a root node, possibly NULL.
@@ -76,41 +74,143 @@ static void infer_root(node_t *nptr) {
  * (STUDENT TODO) 
  */
 
-static void eval_node(node_t *nptr) {
+static void eval_node(node_t *(nptr)) {
         if (nptr == NULL) return;
+        
         if (terminate || ignore_input) return;
-
-        // base case is that the current nodes type is a leaf. 
-        // we have reached the bottom of the tree.
-
-
-        // edge case?
-        if (nptr->node_type == NT_LEAF) {
-            return;
-        }
 
 
         for (int i = 0; i < 2; ++i) {
-            if (nptr->node_type == NT_INTERNAL) {
+            eval_node(nptr->children[i]);
+        }
+
+            
+        if (is_binop(nptr->tok)) {
             if (nptr->type == INT_TYPE) {
-            if (nptr->children[i]->node_type == NT_LEAF) {
-                nptr->val.ival += nptr->children[i]->val.ival;
-            } else {
-                eval_node(nptr->children[i]);
-                nptr->val.ival += nptr->children[i]->val.ival;
-            }
-            }
+                if (nptr->tok == TOK_AND || nptr->tok == TOK_OR || nptr->children[1]->type != INT_TYPE) {
+                     handle_error(ERR_TYPE);
+                     return;
+                }
             }
         }
-    return;
-    //      if (nptr->node_type == NT_INTERNAL) {
-    //         if (nptr->type == INT_TYPE) {
-    //             for (int i = 0; i < 2; ++i) {
-    //                 if (nptr->children[i]->node_type == NT_LEAF)
-    //                 nptr->val.ival += nptr->children[i]->val.ival;
-    //             }
-    //         }
-    //      }
+
+        if (nptr->tok == TOK_PLUS) {
+            if (nptr->type == INT_TYPE) {
+                nptr->val.ival = nptr->children[0]->val.ival + nptr->children[1]->val.ival;
+            } else if (nptr->type == STRING_TYPE) {
+                // 1) allocate memory, fill memory and copy strings over. 
+                char *stringOne = malloc(strlen(nptr->children[0]->val.sval) + 1);
+                strcpy(stringOne, nptr->children[0]->val.sval);
+                char *stringTwo = malloc(strlen(nptr->children[1]->val.sval) + 1);
+                strcpy(stringTwo, nptr->children[1]->val.sval);
+                int requiredSpaceForCat = strlen(stringOne) + strlen(stringTwo) + 1;
+                char *combine = malloc(requiredSpaceForCat);
+                strcpy(combine, stringOne);
+                strcpy(combine + strlen(stringOne), stringTwo);
+                nptr->val.sval = combine;
+            } else if (nptr->type == BOOL_TYPE) {
+                handle_error(ERR_TYPE);
+            }
+        } else if (nptr->tok == TOK_BMINUS) {
+            if (nptr->type == INT_TYPE) {
+                nptr->val.ival = nptr->children[0]->val.ival - nptr->children[1]->val.ival;
+            }
+        } else if (nptr->tok == TOK_TIMES) {
+           if (nptr->type == INT_TYPE) {
+               nptr->val.ival = nptr->children[0]->val.ival * nptr->children[1]->val.ival;
+           } else if (nptr->type == STRING_TYPE) {
+                char *stringOne = malloc(strlen(nptr->children[0]->val.sval) + 1);
+                strcpy(stringOne, nptr->children[0]->val.sval);
+               int factor = nptr->children[0]->val.ival;
+               int totalMemory = (nptr->children[0]->val.ival * strlen(nptr->children[0]->val.sval)) + 1;
+               char *combine = malloc(totalMemory);
+
+                for (int i = 0; i < factor; ++i) {
+                    strcpy(combine, stringOne);
+                }
+                nptr->val.sval = combine;
+
+           } else if (nptr->type == BOOL_TYPE) {
+
+           }
+        } else if (nptr->tok == TOK_DIV) {
+            if (nptr->type == INT_TYPE) {
+                if (nptr->children[1]->val.ival == 0) {
+                    handle_error(ERR_EVAL);
+                } else {
+     
+                    nptr->val.ival = nptr->children[0]->val.ival / nptr->children[1]->val.ival;
+                }
+
+            }
+        } else if (nptr->tok == TOK_MOD) {
+            if (nptr->type == INT_TYPE) {
+                if (nptr->children[1]->val.ival == 0) {
+                    handle_error(ERR_EVAL);
+                } else {
+                    nptr->val.ival = nptr->children[0]->val.ival % nptr->children[1]->val.ival;
+                }
+            }
+        } else if (nptr->tok == TOK_AND) {
+            if (nptr->type == INT_TYPE) {
+
+            } else if (nptr->type == STRING_TYPE) {
+
+            } else if (nptr->type == BOOL_TYPE) {
+                nptr->val.bval = nptr->children[0]->val.bval && nptr->children[1]->val.bval;
+            }
+            
+        } else if (nptr->tok == TOK_OR) {
+            if (nptr->type == INT_TYPE) {
+                
+            } else if (nptr->type == STRING_TYPE) {
+
+            } else if (nptr->type == BOOL_TYPE) {
+                nptr->val.bval = nptr->children[0]->val.bval || nptr->children[1]->val.bval;
+            }
+        } else if (nptr->tok == TOK_LT) {
+            if (nptr->type == INT_TYPE) {
+                nptr->val.ival = nptr->children[0]->val.ival < nptr->children[1]->val.ival;
+
+            } else if (nptr->type == STRING_TYPE) {
+
+            } else if (nptr->type == BOOL_TYPE) {
+                handle_error(ERR_TYPE);
+            }
+        } else if (nptr->tok == TOK_GT) {
+            if (nptr->type == INT_TYPE) {
+                nptr->val.ival = nptr->children[0]->val.ival > nptr->children[1]->val.ival;
+
+            } else if (nptr->type == STRING_TYPE) {
+
+            } else if (nptr->type == BOOL_TYPE) {
+                handle_error(ERR_TYPE);
+            }
+        } else if (nptr->tok == TOK_EQ) {
+            if (nptr->type == INT_TYPE) {
+                nptr->val.ival = nptr->children[0]->val.ival == nptr->children[1]->val.ival;
+            } else if (nptr->type == STRING_TYPE) {
+                if (strcmp(nptr->children[0]->val.sval, nptr->children[1]->val.sval) == 0) {
+                    nptr->val.ival = 1;
+                } else {
+                    nptr->val.sval = 0;
+                }
+            } else if (nptr->type == BOOL_TYPE) {
+                
+
+            } 
+        } else if (nptr->tok == TOK_UMINUS) {
+            if (nptr->type == INT_TYPE) {
+                nptr->val.ival = nptr->children[0]->val.ival * -1;
+            } else if (nptr->type == STRING_TYPE) {
+                nptr->val.sval = strrev(nptr->children[0]->val.sval);
+            }
+        } else if (nptr->tok == TOK_NOT) {
+            if (nptr->type == INT_TYPE) {
+                handle_error(ERR_TYPE);
+            }
+        }
+        return;
 }
 
 /* eval_root() - set the value of the root node based on the values of children 
@@ -174,5 +274,12 @@ void infer_and_eval(node_t *nptr) {
  */
 
 char *strrev(char *str) {
-    return NULL;
+    char *reversed = malloc(strlen(str) + 1);
+    int revPos = 0;
+    for (int i = strlen(str) - 1; i >= 0; i--) {
+        reversed[revPos] = str[i];
+        revPos++;
+    }
+    reversed[revPos] = '\0';
+    return reversed;
 }
