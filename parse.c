@@ -150,9 +150,12 @@ static node_t *build_exp(void) {
             return NULL;
         }
 
+        if (this_token->ttype != TOK_LPAREN) {
+            handle_error(ERR_SYNTAX);
+        }
         // 2) move forward in the stream.
         advance_lexer();
-        if (this_token->ttype == TOK_QUESTION) {
+        if (this_token->ttype == TOK_QUESTION || is_binop(this_token->ttype)) {
             handle_error(ERR_SYNTAX);
         }
         if (next_token->ttype == TOK_QUESTION) {
@@ -193,8 +196,14 @@ static node_t *build_exp(void) {
             } else {
                 
                 internalNode->children[0] = build_exp(); 
+                if (!is_binop(next_token->ttype)) {
+                    handle_error(ERR_SYNTAX);
+                }
                 advance_lexer();
                 internalNode->tok = this_token->ttype;
+                if (is_binop(next_token->ttype) || next_token->ttype == TOK_RPAREN) {
+                    handle_error(ERR_SYNTAX);
+                }
                 advance_lexer();
                 // 3) set right child to result of build exp.
                 internalNode->children[1] = build_exp();
