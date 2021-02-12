@@ -1,4 +1,20 @@
+	ans = 8
+	ans = 2
+	ans = 15
+	ans = 0
 	ans = 1
-	ans = 3
-	ans = 6
-	ans = 10
+	ans = 2
+	ERROR: Failed Evaluation
+	ERROR: Failed Evaluation
+	ans = 2
+	ERROR: Failed Evaluation
+	ans = false
+	ans = true
+	ans = true
+	ans = false
+	ans = false
+	ans = true
+	ans = false
+	ans = true
+	ERROR: Failed Type Inference
+	ERROR: Failed Type Inference

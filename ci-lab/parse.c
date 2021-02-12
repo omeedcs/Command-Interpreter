@@ -100,6 +100,14 @@ static node_t *build_leaf(void) {
         leaf->type = FMT_TYPE;
         // hmm, what goes here?
         leaf->val.fval = this_token->repr[0];
+    } else if (this_token->ttype == TOK_ID && next_token->ttype == TOK_ASSIGN) {
+        leaf->type = ID_TYPE;
+        // char value!
+        leaf->val.sval = malloc(strlen(this_token->repr) + 1);
+        strcpy(leaf->val.sval, this_token->repr);
+    } else if (this_token->ttype == TOK_ID && next_token->ttype != TOK_ASSIGN) {
+        entry_t *temp = get(this_token->repr);
+        leaf->val = temp->val;
     }
     return leaf;
 }
@@ -144,7 +152,6 @@ static node_t *build_exp(void) {
 
         // 2) move forward in the stream.
         advance_lexer();
-
         if (next_token->ttype == TOK_QUESTION) {
             internalNode->children[0] = build_exp();
             advance_lexer();
@@ -172,6 +179,7 @@ static node_t *build_exp(void) {
                 advance_lexer();
                 return internalNode;
             } else {
+                
                 internalNode->children[0] = build_exp(); 
                 advance_lexer();
                 internalNode->tok = this_token->ttype;
@@ -290,18 +298,24 @@ void cleanup(node_t *nptr) {
     if (nptr == NULL) {
         return;
     }
+    
+    if (nptr->type == STRING_TYPE) {
+        free(nptr->val.sval);
+    } 
+    if (nptr->type == ID_TYPE) {
+        // free(nptr->id);
+    }
+    // joyce recommendation-> handle ID freeing as well.
+
     // recurse to the left
     cleanup(nptr->children[0]);
 
     cleanup(nptr->children[1]);
 
+    cleanup(nptr->children[2]);
+
     // free memory for the current node!
     free(nptr);
 
-
-
-// NEED TO FREE STRINGS?
-
-    // recurse to the right
     return;
 }

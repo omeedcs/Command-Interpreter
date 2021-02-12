@@ -124,7 +124,10 @@ static void eval_node(node_t *(nptr)) {
                     char *combine = malloc(requiredSpaceForCat);
                     strcpy(combine, stringOne);
                     strcpy(combine + strlen(stringOne), stringTwo);
+                    free(stringOne);
+                    free(stringTwo);  
                     nptr->val.sval = combine;
+
                 } else {
                     handle_error(ERR_TYPE);
                 }
@@ -141,13 +144,11 @@ static void eval_node(node_t *(nptr)) {
                nptr->val.ival = nptr->children[0]->val.ival * nptr->children[1]->val.ival;
            } else if (nptr->type == STRING_TYPE) {
                int factor = nptr->children[1]->val.ival;
-               nptr->val.sval = malloc(strlen(nptr->children[0]->val.sval) * factor) + 1;
+               nptr->val.sval = malloc(strlen(nptr->children[0]->val.sval) * factor + 1);
                strcpy(nptr->val.sval, nptr->children[0]->val.sval);
                for (int i = 0; i < factor - 1; ++i) {
                    strcat(nptr->val.sval, nptr->children[0]->val.sval);
                }
-            //   nptr->val.sval = "test";
-
            } else if (nptr->type == BOOL_TYPE) {
             
            }
