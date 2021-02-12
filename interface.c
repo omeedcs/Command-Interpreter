@@ -12,7 +12,7 @@
 
 char default_ci_prompt[] = ANSI_BOLD ANSI_COLOR_BLUE "UTCS429-S2021-ci>>> " ANSI_RESET;
 const char ci_logo[] = ANSI_COLOR_MAGENTA "`·.¸¸.·´¯`·.¸><(((º>" ANSI_RESET;
-const char author[] = ANSI_BOLD ANSI_COLOR_RED "Omeed Tehrani - oht83" ANSI_RESET;
+const char author[] = ANSI_BOLD ANSI_COLOR_RED "REPLACE THIS WITH YOUR NAME AND UT EID" ANSI_RESET;
 
 static void print_init_msg(void) {
     time_t t;
@@ -37,6 +37,9 @@ void init(void) {
 }
 
 void finalize(void) {
+    if (infile != NULL) {
+        fclose(infile);
+    }
     if (outfile != stdout) return;
     time_t t;
     assert(time(&t) != -1);

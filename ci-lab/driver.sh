@@ -10,12 +10,23 @@
 set -e
 
 TESTFILE=$1
+if [ ! -f "$TESTFILE" ]; then
+    echo "$TESTFILE does not exist"
+    exit 1
+fi
+
 ./ci -i $TESTFILE -o _output1
 ./ci_reference -i $1 -o _output2
+if [ ! -f _output1 ]; then
+    echo "ci failed to create the output file"
+    exit 1
+fi
+if [ ! -f _output2 ]; then
+    echo "ci_reference failed to create the output file"
+    exit 1
+fi
 
-grep -n -v -f _output1 _output2 > /dev/null
-
-DIFFS=$(grep -n -v -f _output1 _output2 | cut -d ":" -f 1)
+DIFFS=$(grep -nvxf _output1 _output2 | cut -d ":" -f 1)
 if [ "$DIFFS" ] 
 then
     echo "failed testcases:"
