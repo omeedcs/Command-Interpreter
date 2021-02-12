@@ -142,13 +142,13 @@ static void eval_node(node_t *(nptr)) {
         } else if (nptr->tok == TOK_TIMES) {
            if (nptr->type == INT_TYPE) {
                nptr->val.ival = nptr->children[0]->val.ival * nptr->children[1]->val.ival;
-           } else if (nptr->type == STRING_TYPE) {
-               int factor = nptr->children[1]->val.ival;
-               nptr->val.sval = malloc(strlen(nptr->children[0]->val.sval) * factor + 1);
-               strcpy(nptr->val.sval, nptr->children[0]->val.sval);
-               for (int i = 0; i < factor - 1; ++i) {
-                   strcat(nptr->val.sval, nptr->children[0]->val.sval);
-               }
+        } else if (nptr->type == STRING_TYPE) {
+            int factor = nptr->children[1]->val.ival;
+            nptr->val.sval = malloc(strlen(nptr->children[0]->val.sval) * factor + 1);
+            strcpy(nptr->val.sval, nptr->children[0]->val.sval);
+            for (int i = 0; i < factor - 1; ++i) {
+                strcat(nptr->val.sval, nptr->children[0]->val.sval);
+            }
            } else if (nptr->type == BOOL_TYPE) {
             
            }

@@ -72,7 +72,7 @@ static node_t *build_leaf(void) {
 
     if (! leaf) {
         // handle memory allocation failure
-        logging(LOG_FATAL, "failed to allocate node");
+        logging(LOG_ERROR, "failed to allocate node");
         return NULL;
     }
 
@@ -146,7 +146,7 @@ static node_t *build_exp(void) {
 
         if (! internalNode) {
             // handle memory allocation failure
-            logging(LOG_FATAL, "failed to allocate node");
+            logging(LOG_ERROR, "failed to allocate node");
             return NULL;
         }
 
