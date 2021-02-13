@@ -172,6 +172,9 @@ static void eval_node(node_t *(nptr)) {
                 
             }
         } else if (nptr->tok == TOK_MOD) {
+            if (nptr->children[0]->type != nptr->children[1]->type) {
+                handle_error(ERR_TYPE);
+            }
             if (nptr->type == INT_TYPE) {
                 if (nptr->children[1]->val.ival == 0) {
                     handle_error(ERR_EVAL);
