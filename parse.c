@@ -106,10 +106,15 @@ static node_t *build_leaf(void) {
         leaf->val.sval = malloc(strlen(this_token->repr) + 1);
         strcpy(leaf->val.sval, this_token->repr);
     } else if (this_token->ttype == TOK_ID && next_token->ttype != TOK_ASSIGN) {
-        entry_t *temp = (entry_t *) calloc(1, sizeof(entry_t));
+        entry_t *temp = malloc(sizeof(entry_t) + 1);
         temp = get(this_token->repr);
-        leaf->type = temp->type;
-        leaf->val = temp->val;
+        if (temp == NULL) {
+            handle_error(ERR_UNDEFINED);
+        } else {
+            leaf->type = temp->type;
+            leaf->val = temp->val;
+        }
+
     }
     return leaf;
 }
