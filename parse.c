@@ -107,6 +107,7 @@ static node_t *build_leaf(void) {
         strcpy(leaf->val.sval, this_token->repr);
     } else if (this_token->ttype == TOK_ID && next_token->ttype != TOK_ASSIGN) {
         entry_t *temp = get(this_token->repr);
+        leaf->type = temp->type;
         leaf->val = temp->val;
     }
     return leaf;
