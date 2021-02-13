@@ -35,11 +35,14 @@ static void infer_type(node_t *nptr) {
     infer_type(nptr->children[0]);
     infer_type(nptr->children[1]);
     nptr->type = nptr->children[0]->type;
-    if (nptr->tok == TOK_EQ || nptr->tok == TOK_LT || nptr->tok == TOK_GT) {
-        if (nptr->type == STRING_TYPE) {
+     if (nptr->tok == TOK_EQ || nptr->tok == TOK_LT || nptr->tok == TOK_GT) {
+         if (nptr->type == STRING_TYPE) {
             nptr->type = BOOL_TYPE;
-        }
+
+         }
     }
+    
+
     if (nptr->tok == TOK_QUESTION) {
         infer_type(nptr->children[2]);
     }
@@ -89,6 +92,7 @@ static void infer_root(node_t *nptr) {
  */
 
 static void eval_node(node_t *(nptr)) {
+
         if (nptr == NULL) return;
         
         if (terminate || ignore_input) return;
@@ -98,8 +102,7 @@ static void eval_node(node_t *(nptr)) {
         for (int i = 0; i < 2; ++i) {
             eval_node(nptr->children[i]);
         }
-
-            
+           
         if (is_binop(nptr->tok)) {
             if (nptr->type == INT_TYPE) {
                 if (nptr->tok == TOK_AND || nptr->tok == TOK_OR || nptr->children[1]->type != INT_TYPE) {
@@ -283,6 +286,7 @@ static void eval_node(node_t *(nptr)) {
         }
         return;
 }
+
 
 /* eval_root() - set the value of the root node based on the values of children 
  * Parameter: A pointer to a root node, possibly NULL.

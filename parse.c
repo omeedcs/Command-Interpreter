@@ -106,8 +106,9 @@ static node_t *build_leaf(void) {
         leaf->val.sval = malloc(strlen(this_token->repr) + 1);
         strcpy(leaf->val.sval, this_token->repr);
     } else if (this_token->ttype == TOK_ID && next_token->ttype != TOK_ASSIGN) {
-        entry_t *temp = get(this_token->repr);
-        
+        entry_t *temp = (entry_t *) calloc(1, sizeof(entry_t));
+        temp = get(this_token->repr);
+        leaf->type = temp->type;
         leaf->val = temp->val;
     }
     return leaf;
@@ -160,6 +161,7 @@ static node_t *build_exp(void) {
         if (this_token->ttype == TOK_QUESTION || is_binop(this_token->ttype) || (is_unop(this_token->ttype) && next_token->ttype == TOK_RPAREN)) {
             handle_error(ERR_SYNTAX);
         }
+
         if (next_token->ttype == TOK_QUESTION) {
             if (this_token->ttype == TOK_NUM) {
                 handle_error(ERR_TYPE);
@@ -211,6 +213,7 @@ static node_t *build_exp(void) {
                     handle_error(ERR_SYNTAX);
                 }
 
+                
                 advance_lexer();
                 // 3) set right child to result of build exp.
                 internalNode->children[1] = build_exp();
@@ -330,9 +333,9 @@ void cleanup(node_t *nptr) {
     if (nptr->type == STRING_TYPE) {
         free(nptr->val.sval);
     } 
-    if (nptr->type == ID_TYPE) {
+    // if (nptr->type == ID_TYPE) {
         // free(nptr->id);
-    }
+    // }
     // joyce recommendation-> handle ID freeing as well.
 
     // recurse to the left

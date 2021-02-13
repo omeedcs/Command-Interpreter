@@ -127,6 +127,8 @@ void put(char *id, node_t *nptr) {
         if ((strcmp(newEntry->id, id) == 0)) {
             newEntry->type = nptr->type;
             if (nptr->type == STRING_TYPE) {
+                // malloc space. 
+                newEntry->val.sval = malloc(strlen(newEntry->val.sval) + 1); 
                 strcpy(newEntry->val.sval, nptr->val.sval);
             } else if (nptr->type == INT_TYPE) {
                 newEntry->val.ival = nptr->val.ival;
