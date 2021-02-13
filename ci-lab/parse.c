@@ -190,6 +190,10 @@ static node_t *build_exp(void) {
             if (is_unop(this_token->ttype)) {
                 internalNode->tok = this_token->ttype;
                 advance_lexer();
+                if (this_token->ttype == TOK_RPAREN) {
+                    handle_error(ERR_SYNTAX);
+
+                }
                 internalNode->children[0] = build_exp(); 
                 advance_lexer();
                 return internalNode;

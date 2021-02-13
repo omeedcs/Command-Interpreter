@@ -109,6 +109,7 @@ static void eval_node(node_t *(nptr)) {
             }
         }
 
+
         if (nptr->tok == TOK_PLUS) {
 
             if (nptr->type == INT_TYPE) {
@@ -144,9 +145,11 @@ static void eval_node(node_t *(nptr)) {
                nptr->val.ival = nptr->children[0]->val.ival * nptr->children[1]->val.ival;
         } else if (nptr->type == STRING_TYPE) {
             int factor = nptr->children[1]->val.ival;
-            nptr->val.sval = malloc(strlen(nptr->children[0]->val.sval) * factor + 1);
-            strcpy(nptr->val.sval, nptr->children[0]->val.sval);
-            for (int i = 0; i < factor - 1; ++i) {
+            if (factor < 0) {
+                handle_error(ERR_EVAL);
+            }
+            nptr->val.sval = calloc(1, strlen(nptr->children[0]->val.sval) * factor + 1);
+            for (int i = 0; i < factor; ++i) {
                 strcat(nptr->val.sval, nptr->children[0]->val.sval);
             }
            } else if (nptr->type == BOOL_TYPE) {
@@ -200,6 +203,7 @@ static void eval_node(node_t *(nptr)) {
             } else if (nptr->type == STRING_TYPE) {
 
             } else if (nptr->type == BOOL_TYPE) {
+
                  if (strcmp(nptr->children[0]->val.sval, nptr->children[1]->val.sval) < 0) {
                     nptr->val.bval = 1; 
                 } else {
@@ -253,8 +257,10 @@ static void eval_node(node_t *(nptr)) {
                 handle_error(ERR_TYPE);
             } else {
                 if (nptr->children[0]->val.bval == 1) {
+                    eval_node(nptr->children[1]);
                     nptr->val.ival = nptr->children[1]->val.ival;
                 } else {
+                    eval_node(nptr->children[2]);
                     nptr->val.ival = nptr->children[2]->val.ival;
                 }
             }
