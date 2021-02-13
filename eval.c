@@ -250,11 +250,13 @@ static void eval_node(node_t *(nptr)) {
                 nptr->val.ival = nptr->children[0]->val.ival * -1;
             } else if (nptr->type == STRING_TYPE) {
                 nptr->val.sval = strrev(nptr->children[0]->val.sval);
+            } else if (nptr->type == BOOL_TYPE) {
+                handle_error(ERR_TYPE); 
             }
         } else if (nptr->tok == TOK_NOT) {
             if (nptr->type == INT_TYPE) {
                 handle_error(ERR_TYPE);
-            }
+            } 
         } else if (nptr->tok == TOK_QUESTION) {
             if (nptr->children[1]->type == INT_TYPE && nptr->children[2]->type == BOOL_TYPE) {
                 handle_error(ERR_TYPE);

@@ -107,7 +107,7 @@ static node_t *build_leaf(void) {
         strcpy(leaf->val.sval, this_token->repr);
     } else if (this_token->ttype == TOK_ID && next_token->ttype != TOK_ASSIGN) {
         entry_t *temp = get(this_token->repr);
-        leaf->type = temp->type;
+        
         leaf->val = temp->val;
     }
     return leaf;
@@ -154,9 +154,10 @@ static node_t *build_exp(void) {
         if (this_token->ttype != TOK_LPAREN) {
             handle_error(ERR_SYNTAX);
         }
+        
         // 2) move forward in the stream.
         advance_lexer();
-        if (this_token->ttype == TOK_QUESTION || is_binop(this_token->ttype)) {
+        if (this_token->ttype == TOK_QUESTION || is_binop(this_token->ttype) || (is_unop(this_token->ttype) && next_token->ttype == TOK_RPAREN)) {
             handle_error(ERR_SYNTAX);
         }
         if (next_token->ttype == TOK_QUESTION) {
