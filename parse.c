@@ -210,6 +210,11 @@ static node_t *build_exp(void) {
                 if (is_binop(next_token->ttype) || next_token->ttype == TOK_RPAREN) {
                     handle_error(ERR_SYNTAX);
                 }
+
+                if (internalNode->children[0]->tok != next_token->ttype) {
+                    handle_error(ERR_TYPE);
+                }
+                
                 advance_lexer();
                 // 3) set right child to result of build exp.
                 internalNode->children[1] = build_exp();

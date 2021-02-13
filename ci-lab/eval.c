@@ -109,9 +109,11 @@ static void eval_node(node_t *(nptr)) {
             }
         }
 
+      
+
 
         if (nptr->tok == TOK_PLUS) {
-
+          
             if (nptr->type == INT_TYPE) {
                 nptr->val.ival = nptr->children[0]->val.ival + nptr->children[1]->val.ival;
             } else if (nptr->type == STRING_TYPE) {
@@ -156,7 +158,7 @@ static void eval_node(node_t *(nptr)) {
             
            }
         } else if (nptr->tok == TOK_DIV) {
-
+            
             if (nptr->type == INT_TYPE) {
                 if (nptr->children[1]->val.ival == 0) {
                     handle_error(ERR_EVAL);
@@ -206,13 +208,17 @@ static void eval_node(node_t *(nptr)) {
             } else if (nptr->type == STRING_TYPE) {
 
             } else if (nptr->type == BOOL_TYPE) {
-
-                 if (strcmp(nptr->children[0]->val.sval, nptr->children[1]->val.sval) < 0) {
+                if (nptr->children[0]->type != nptr->children[1]->type) {
+                    handle_error(ERR_TYPE);
+                } else {
+                    if (strcmp(nptr->children[0]->val.sval, nptr->children[1]->val.sval) < 0) {
                     nptr->val.bval = 1; 
                 } else {
                     nptr->val.bval = 0;
                     }
                 } 
+            }
+                 
    
         } else if (nptr->tok == TOK_GT) {
             if (nptr->type == INT_TYPE) {
