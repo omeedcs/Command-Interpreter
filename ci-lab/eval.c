@@ -245,11 +245,16 @@ static void eval_node(node_t *(nptr)) {
 
 
             } else if (nptr->type == BOOL_TYPE) {
-                   if (strcmp(nptr->children[0]->val.sval, nptr->children[1]->val.sval) == 0) {
+                if (nptr->children[0]->type == BOOL_TYPE && nptr->children[1]->type == BOOL_TYPE) {
+                    handle_error(ERR_TYPE);
+                } else {
+                if (strcmp(nptr->children[0]->val.sval, nptr->children[1]->val.sval) == 0) {
                     nptr->val.bval = 1; 
                 } else {
                     nptr->val.bval = 0;
                 }
+                }
+           
             } 
         } else if (nptr->tok == TOK_UMINUS) {
             if (nptr->type == INT_TYPE) {
