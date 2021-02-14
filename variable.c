@@ -115,7 +115,6 @@ void put(char *id, node_t *nptr) {
     
     // find the proper hashing value
     int theHashingIndex = hash_function(id);
-
     
     if (var_table->entries[theHashingIndex] == NULL) {
         var_table->entries[theHashingIndex] = init_entry(id, nptr);
