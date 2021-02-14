@@ -108,12 +108,19 @@ static node_t *build_leaf(void) {
     } else if (this_token->ttype == TOK_ID && next_token->ttype != TOK_ASSIGN) {
         entry_t *temp = malloc(sizeof(entry_t) + 1);
         temp = get(this_token->repr);
-      
+
+        // doesnt exist! 
         if (temp == NULL) {
             handle_error(ERR_UNDEFINED);
         } else {
+            // set the type and value!
             leaf->type = temp->type;
-            leaf->val = temp->val;
+            if (leaf->type == STRING_TYPE) {
+                leaf->val.sval = malloc(strlen(temp->val.sval));
+                strcpy(leaf->val.sval, temp->val.sval);
+            } else {
+                leaf->val.ival = temp->val.ival;
+            }
         }
     }
     return leaf;
