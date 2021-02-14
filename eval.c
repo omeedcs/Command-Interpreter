@@ -100,7 +100,7 @@ static void eval_node(node_t *(nptr)) {
             if (nptr->children[0]->type == INT_TYPE || (nptr->children[1]->type == INT_TYPE && nptr->children[2]->type == BOOL_TYPE)) {
                 handle_error(ERR_TYPE);
         } else {
-                if (nptr->children[0]->val.bval == 0) {
+                if (nptr->children[0]->val.bval == 1) {
                     eval_node(nptr->children[1]);
                     nptr->val.ival = nptr->children[1]->val.ival;
                 } else {
