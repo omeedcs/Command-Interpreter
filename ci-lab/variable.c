@@ -121,18 +121,16 @@ void put(char *id, node_t *nptr) {
         var_table->entries[theHashingIndex] = init_entry(id, nptr);
     } else {
         entry_t *newEntry = var_table->entries[theHashingIndex];
-        while (newEntry->next != NULL) {
+        while (strcmp(newEntry->id, id) != 0 || newEntry->next != NULL) {
             newEntry = newEntry->next;
         }
         if ((strcmp(newEntry->id, id) == 0)) {
             newEntry->type = nptr->type;
             if (nptr->type == STRING_TYPE) {
                 // malloc space. 
-                char *temp = malloc(strlen(nptr->val.sval) + 1);
-                strcpy(temp, nptr->val.sval);
-                strcpy(newEntry->val.sval, temp);
-                // newEntry->val.sval = malloc(strlen(newEntry->val.sval) + 1); 
-                // strcpy(newEntry->val.sval, nptr->val.sval);
+                free(newEntry->val.sval);
+                newEntry->val.sval = malloc(strlen(nptr->val.sval) + 1); 
+                strcpy(newEntry->val.sval, nptr->val.sval);
             } else if (nptr->type == INT_TYPE) {
                 newEntry->val.ival = nptr->val.ival;
             }
