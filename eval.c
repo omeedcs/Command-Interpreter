@@ -36,10 +36,7 @@ static void infer_type(node_t *nptr) {
     infer_type(nptr->children[1]);
     nptr->type = nptr->children[0]->type;
      if (nptr->tok == TOK_EQ || nptr->tok == TOK_LT || nptr->tok == TOK_GT) {
-         if (nptr->type == STRING_TYPE) {
             nptr->type = BOOL_TYPE;
-
-         }
     }
     
 
