@@ -110,18 +110,22 @@ static node_t *build_leaf(void) {
         temp = get(this_token->repr);
         // doesnt exist! 
         if (temp == NULL) {
-            handle_error(ERR_UNDEFINED);
+            leaf->type = NO_TYPE;
         } else {
             // set the type and value!
             leaf->type = temp->type;
+            // lets update based on type. that makes sense...
             if (leaf->type == STRING_TYPE) {
                 leaf->val.sval = malloc(strlen(temp->val.sval));
                 strcpy(leaf->val.sval, temp->val.sval);
-            } else {
+            } else if (leaf->type == INT_TYPE) {
                 leaf->val.ival = temp->val.ival;
+            } else {
+                // not string or int? its gotta be a bool!
+                leaf->val.bval = temp->val.bval;
             }
         }
-        }
+    }
 
 
     return leaf;
@@ -174,29 +178,6 @@ static node_t *build_exp(void) {
         if (this_token->ttype == TOK_QUESTION || is_binop(this_token->ttype) || (is_unop(this_token->ttype) && next_token->ttype == TOK_RPAREN)) {
             handle_error(ERR_SYNTAX);
         }
-
-        // if (next_token->ttype == TOK_QUESTION) {
-        //     if (this_token->ttype == TOK_NUM) {
-        //         handle_error(ERR_TYPE);
-        //     }
-        //     internalNode->children[0] = build_exp();
-        //     advance_lexer();
-        //     internalNode->node_type = NT_INTERNAL;
-        //     internalNode->tok = this_token->ttype;
-        //     advance_lexer();
-        //     internalNode->children[1] = build_exp();
-        //     if (next_token->ttype != TOK_COLON) {
-        //         handle_error(ERR_SYNTAX);
-        //     }
-        //     advance_lexer();
-        //     advance_lexer();
-        //     internalNode->children[2] = build_exp();
-        //     if (next_token->ttype != TOK_RPAREN) {
-        //         handle_error(ERR_SYNTAX);
-        //     }
-        //     advance_lexer();
-        //     return internalNode;
-        // }
         // check if it is a leaf. 
         if (next_token->ttype == TOK_RPAREN) {
             internalNode = build_leaf();

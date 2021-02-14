@@ -29,8 +29,13 @@ static void infer_type(node_t *nptr) {
      // 2) check the running status of the program
     if (terminate || ignore_input) return;
     
+    if (nptr->type == NO_TYPE && nptr->node_type == NT_LEAF) {
+        handle_error(ERR_UNDEFINED);
+        return;
+    }
     if (nptr->node_type == NT_LEAF) return;
     
+
     
     infer_type(nptr->children[0]);
     infer_type(nptr->children[1]);
@@ -97,7 +102,7 @@ static void eval_node(node_t *(nptr)) {
 
 
         if (nptr->tok == TOK_QUESTION) {
-            if (nptr->children[0]->type == INT_TYPE || (nptr->children[1]->type == INT_TYPE && nptr->children[2]->type == BOOL_TYPE)) {
+            if (nptr->children[0]->type == INT_TYPE || nptr->children[0]->type == STRING_TYPE || (nptr->children[1]->type == INT_TYPE && nptr->children[2]->type == BOOL_TYPE)) {
                 handle_error(ERR_TYPE);
         } else {
                 if (nptr->children[0]->val.bval == 1) {
@@ -248,7 +253,7 @@ static void eval_node(node_t *(nptr)) {
    
             } else if (nptr->type == BOOL_TYPE) {
                 if (nptr->children[0]->type == INT_TYPE && nptr->children[1]->type == INT_TYPE) {
-                    nptr->val.ival = nptr->children[0]->val.ival > nptr->children[1]->val.ival;
+                    nptr->val.bval = nptr->children[0]->val.ival > nptr->children[1]->val.ival;
                 }
                 else if (nptr->children[0]->val.sval && nptr->children[1]->val.sval) {
                     if (strcmp(nptr->children[0]->val.sval, nptr->children[1]->val.sval) > 0) {
