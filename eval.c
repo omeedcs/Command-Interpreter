@@ -38,6 +38,8 @@ static void infer_type(node_t *nptr) {
      if (nptr->tok == TOK_EQ || nptr->tok == TOK_LT || nptr->tok == TOK_GT) {
             nptr->type = BOOL_TYPE;
     }
+
+
     
 
     if (nptr->tok == TOK_QUESTION) {
@@ -94,24 +96,53 @@ static void eval_node(node_t *(nptr)) {
 
         if (nptr->node_type == NT_LEAF) return;
 
+        if (nptr->tok == TOK_PLUS) {
+            if (nptr->children[0]->type == BOOL_TYPE && nptr->children[1]->type == INT_TYPE) {
+                handle_error(ERR_TYPE);
+            } else {
+                if (nptr->type == INT_TYPE) {
+                nptr->val.ival = nptr->children[0]->val.ival + nptr->children[1]->val.ival;
+            } else if (nptr->type == STRING_TYPE) {
+                // 1) allocate memory, fill memory and copy strings over. 
+                if (nptr->children[0]->type == STRING_TYPE && nptr->children[1]->type == STRING_TYPE) {
+                    char *stringOne = malloc(strlen(nptr->children[0]->val.sval) + 1);
+                    strcpy(stringOne, nptr->children[0]->val.sval);
+                    char *stringTwo = malloc(strlen(nptr->children[1]->val.sval) + 1);
+                    strcpy(stringTwo, nptr->children[1]->val.sval);
+                    int requiredSpaceForCat = strlen(stringOne) + strlen(stringTwo) + 1;
+                    char *combine = malloc(requiredSpaceForCat);
+                    strcpy(combine, stringOne);
+                    strcpy(combine + strlen(stringOne), stringTwo);
+                    free(stringOne);
+                    free(stringTwo);  
+                    nptr->val.sval = combine;
 
-
-        if (nptr->tok == TOK_QUESTION) {
+                } else {
+                    handle_error(ERR_TYPE);
+                }
+          
+                } else if (nptr->type == BOOL_TYPE) {
+                handle_error(ERR_TYPE);
+                }
+            }
+        }
+        else if (nptr->tok == TOK_QUESTION) {
             if (nptr->children[0]->type == INT_TYPE || (nptr->children[1]->type == INT_TYPE && nptr->children[2]->type == BOOL_TYPE)) {
                 handle_error(ERR_TYPE);
         } else {
+
                 if (nptr->children[0]->val.bval == 1) {
                     eval_node(nptr->children[1]);
-                    nptr->val.ival = nptr->children[1]->val.ival;
+                    nptr->val = nptr->children[1]->val;
                 } else {
                     eval_node(nptr->children[2]);
-                    nptr->val.ival = nptr->children[2]->val.ival;
+                    nptr->val = nptr->children[2]->val;
                 }
             }
+   
         } else {
 
-
-
+    
         // is the nptr ttoken a question mark?
             // if so, is the first child at zero, true or false?
             // if true => evaluate the child at one.
@@ -134,32 +165,7 @@ static void eval_node(node_t *(nptr)) {
 
       
 
-        if (nptr->tok == TOK_PLUS) {
-            if (nptr->type == INT_TYPE) {
-                nptr->val.ival = nptr->children[0]->val.ival + nptr->children[1]->val.ival;
-            } else if (nptr->type == STRING_TYPE) {
-                // 1) allocate memory, fill memory and copy strings over. 
-                if (nptr->children[0]->type == STRING_TYPE && nptr->children[1]->type == STRING_TYPE) {
-                    char *stringOne = malloc(strlen(nptr->children[0]->val.sval) + 1);
-                    strcpy(stringOne, nptr->children[0]->val.sval);
-                    char *stringTwo = malloc(strlen(nptr->children[1]->val.sval) + 1);
-                    strcpy(stringTwo, nptr->children[1]->val.sval);
-                    int requiredSpaceForCat = strlen(stringOne) + strlen(stringTwo) + 1;
-                    char *combine = malloc(requiredSpaceForCat);
-                    strcpy(combine, stringOne);
-                    strcpy(combine + strlen(stringOne), stringTwo);
-                    free(stringOne);
-                    free(stringTwo);  
-                    nptr->val.sval = combine;
-
-                } else {
-                    handle_error(ERR_TYPE);
-                }
-          
-            } else if (nptr->type == BOOL_TYPE) {
-                handle_error(ERR_TYPE);
-            }
-        } else if (nptr->tok == TOK_BMINUS) {
+        if (nptr->tok == TOK_BMINUS) {
             if (nptr->type == INT_TYPE) {
                 nptr->val.ival = nptr->children[0]->val.ival - nptr->children[1]->val.ival;
             }
@@ -179,7 +185,6 @@ static void eval_node(node_t *(nptr)) {
             
            }
         } else if (nptr->tok == TOK_DIV) {
-            
             if (nptr->type == INT_TYPE) {
                 if (nptr->children[1]->val.ival == 0) {
                     handle_error(ERR_EVAL);
@@ -245,6 +250,7 @@ static void eval_node(node_t *(nptr)) {
                  
    
         } else if (nptr->tok == TOK_GT) {
+
             if (nptr->type == INT_TYPE) {
                 nptr->val.ival = nptr->children[0]->val.ival > nptr->children[1]->val.ival;
 
@@ -252,9 +258,12 @@ static void eval_node(node_t *(nptr)) {
    
             } else if (nptr->type == BOOL_TYPE) {
                 if (nptr->children[0]->type == INT_TYPE && nptr->children[1]->type == INT_TYPE) {
-                    nptr->val.ival = nptr->children[0]->val.ival > nptr->children[1]->val.ival;
-                }
-                else if (nptr->children[0]->val.sval && nptr->children[1]->val.sval) {
+                    if (nptr->children[0]->val.ival > nptr->children[1]->val.ival) {
+                        nptr->val.bval = 1; 
+                    } else {
+                        nptr->val.bval = 0;
+                    }
+                } else if (nptr->children[0]->val.sval && nptr->children[1]->val.sval) {
                     if (strcmp(nptr->children[0]->val.sval, nptr->children[1]->val.sval) > 0) {
                         nptr->val.bval = 1; 
                     } else {
