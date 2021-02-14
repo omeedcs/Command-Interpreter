@@ -175,28 +175,28 @@ static node_t *build_exp(void) {
             handle_error(ERR_SYNTAX);
         }
 
-        if (next_token->ttype == TOK_QUESTION) {
-            if (this_token->ttype == TOK_NUM) {
-                handle_error(ERR_TYPE);
-            }
-            internalNode->children[0] = build_exp();
-            advance_lexer();
-            internalNode->node_type = NT_INTERNAL;
-            internalNode->tok = this_token->ttype;
-            advance_lexer();
-            internalNode->children[1] = build_exp();
-            if (next_token->ttype != TOK_COLON) {
-                handle_error(ERR_SYNTAX);
-            }
-            advance_lexer();
-            advance_lexer();
-            internalNode->children[2] = build_exp();
-            if (next_token->ttype != TOK_RPAREN) {
-                handle_error(ERR_SYNTAX);
-            }
-            advance_lexer();
-            return internalNode;
-        }
+        // if (next_token->ttype == TOK_QUESTION) {
+        //     if (this_token->ttype == TOK_NUM) {
+        //         handle_error(ERR_TYPE);
+        //     }
+        //     internalNode->children[0] = build_exp();
+        //     advance_lexer();
+        //     internalNode->node_type = NT_INTERNAL;
+        //     internalNode->tok = this_token->ttype;
+        //     advance_lexer();
+        //     internalNode->children[1] = build_exp();
+        //     if (next_token->ttype != TOK_COLON) {
+        //         handle_error(ERR_SYNTAX);
+        //     }
+        //     advance_lexer();
+        //     advance_lexer();
+        //     internalNode->children[2] = build_exp();
+        //     if (next_token->ttype != TOK_RPAREN) {
+        //         handle_error(ERR_SYNTAX);
+        //     }
+        //     advance_lexer();
+        //     return internalNode;
+        // }
         // check if it is a leaf. 
         if (next_token->ttype == TOK_RPAREN) {
             internalNode = build_leaf();
@@ -215,9 +215,9 @@ static node_t *build_exp(void) {
                 advance_lexer();
                 return internalNode;
             } else {
-                
                 internalNode->children[0] = build_exp(); 
-                if (!is_binop(next_token->ttype)) {
+                bool isQuestion = next_token->ttype == TOK_QUESTION;
+                if (!is_binop(next_token->ttype) && !isQuestion) {
                     handle_error(ERR_SYNTAX);
                 }
                 advance_lexer();
@@ -230,10 +230,18 @@ static node_t *build_exp(void) {
                 advance_lexer();
                 // 3) set right child to result of build exp.
                 internalNode->children[1] = build_exp();
+                if (isQuestion) {
+                    advance_lexer();
+                    if (this_token->ttype != TOK_COLON) {
+                        handle_error(ERR_SYNTAX);
+                    }
+                    advance_lexer();
+                    internalNode->children[2] = build_exp();
+                } 
             }
         }
-            advance_lexer();
-            return internalNode;
+        advance_lexer();
+        return internalNode;
         }
     }
 
