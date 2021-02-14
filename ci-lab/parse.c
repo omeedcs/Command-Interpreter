@@ -240,6 +240,9 @@ static node_t *build_exp(void) {
                 } 
             }
         }
+        if (next_token->ttype != TOK_RPAREN) {
+            handle_error(ERR_SYNTAX);
+        }
         advance_lexer();
         return internalNode;
         }

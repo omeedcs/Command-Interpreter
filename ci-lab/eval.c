@@ -99,6 +99,29 @@ static void eval_node(node_t *(nptr)) {
 
         if (nptr->node_type == NT_LEAF) return;
 
+
+
+        if (nptr->tok == TOK_QUESTION) {
+            if (nptr->children[0]->type == INT_TYPE || (nptr->children[1]->type == INT_TYPE && nptr->children[2]->type == BOOL_TYPE)) {
+                handle_error(ERR_TYPE);
+        } else {
+                if (nptr->children[0]->val.bval == 1) {
+                    eval_node(nptr->children[1]);
+                    nptr->val.ival = nptr->children[1]->val.ival;
+                } else {
+                    eval_node(nptr->children[2]);
+                    nptr->val.ival = nptr->children[2]->val.ival;
+                }
+            }
+        } else {
+
+
+
+        // is the nptr ttoken a question mark?
+            // if so, is the first child at zero, true or false?
+            // if true => evaluate the child at one.
+            // else... evaluate the child at two.
+        
         for (int i = 0; i < 2; ++i) {
             eval_node(nptr->children[i]);
         }
@@ -112,11 +135,11 @@ static void eval_node(node_t *(nptr)) {
             }
         }
 
+
+
       
 
-
         if (nptr->tok == TOK_PLUS) {
-          
             if (nptr->type == INT_TYPE) {
                 nptr->val.ival = nptr->children[0]->val.ival + nptr->children[1]->val.ival;
             } else if (nptr->type == STRING_TYPE) {
@@ -255,9 +278,8 @@ static void eval_node(node_t *(nptr)) {
                     nptr->val.bval = 1; 
                 } else {
                     nptr->val.bval = 0;
+                    }
                 }
-                }
-           
             } 
         } else if (nptr->tok == TOK_UMINUS) {
             if (nptr->type == INT_TYPE) {
@@ -271,19 +293,8 @@ static void eval_node(node_t *(nptr)) {
             if (nptr->type == INT_TYPE) {
                 handle_error(ERR_TYPE);
             } 
-        } else if (nptr->tok == TOK_QUESTION) {
-            if (nptr->children[1]->type == INT_TYPE && nptr->children[2]->type == BOOL_TYPE) {
-                handle_error(ERR_TYPE);
-            } else {
-                if (nptr->children[0]->val.bval == 1) {
-                    eval_node(nptr->children[1]);
-                    nptr->val.ival = nptr->children[1]->val.ival;
-                } else {
-                    eval_node(nptr->children[2]);
-                    nptr->val.ival = nptr->children[2]->val.ival;
-                }
-            }
-        }
+        } 
+    }
         return;
 }
 
