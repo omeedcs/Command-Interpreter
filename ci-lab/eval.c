@@ -104,7 +104,7 @@ static void eval_node(node_t *(nptr)) {
         if (nptr->tok == TOK_QUESTION) {
             if (nptr->children[0]->type == INT_TYPE || nptr->children[0]->type == STRING_TYPE || (nptr->children[1]->type == INT_TYPE && nptr->children[2]->type == BOOL_TYPE)) {
                 handle_error(ERR_TYPE);
-            } else {
+        } else {
                 eval_node(nptr->children[0]);
                 if (nptr->children[0]->val.bval == 1) {
                     eval_node(nptr->children[1]);
@@ -296,9 +296,11 @@ static void eval_node(node_t *(nptr)) {
                 handle_error(ERR_TYPE); 
             }
         } else if (nptr->tok == TOK_NOT) {
-            if (nptr->type == INT_TYPE) {
+            if (nptr->type == BOOL_TYPE) {
+                nptr->val.bval = !(nptr->children[0]->val.bval);
+            } else {
                 handle_error(ERR_TYPE);
-            } 
+            }
         } 
     }
         return;
