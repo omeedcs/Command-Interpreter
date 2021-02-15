@@ -120,7 +120,7 @@ void put(char *id, node_t *nptr) {
         var_table->entries[theHashingIndex] = init_entry(id, nptr);
     } else {
         entry_t *newEntry = var_table->entries[theHashingIndex];
-        while (newEntry->next != NULL) {
+        while (newEntry->next != NULL && strcmp(newEntry->id, id) != 0) {
             newEntry = newEntry->next;
         }
         if ((strcmp(newEntry->id, id) == 0)) {
