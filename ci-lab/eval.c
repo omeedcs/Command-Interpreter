@@ -95,13 +95,6 @@ static void eval_node(node_t *(nptr)) {
 
         if (nptr->node_type == NT_LEAF) return;
 
-
-        // handle special case in binary for if the types arent the same when you are adding.
-        if (nptr->children[0]->type != nptr->children[1]->type) {
-            handle_error(ERR_TYPE);
-            return;
-        }
-
         if (nptr->tok == TOK_QUESTION) {
             if (nptr->children[0]->type == INT_TYPE || nptr->children[0]->type == STRING_TYPE || (nptr->children[1]->type == INT_TYPE && nptr->children[2]->type == BOOL_TYPE)) {
                 handle_error(ERR_TYPE);
