@@ -43,7 +43,6 @@ static void infer_type(node_t *nptr) {
      if (nptr->tok == TOK_EQ || nptr->tok == TOK_LT || nptr->tok == TOK_GT) {
             nptr->type = BOOL_TYPE;
     }
-    
 
     if (nptr->tok == TOK_QUESTION) {
         infer_type(nptr->children[2]);
@@ -51,9 +50,6 @@ static void infer_type(node_t *nptr) {
     return;
 
 }
-
-    // getting a core dump?
-
 
 /* infer_root() - set the type of the root node based on the types of children
  * Parameter: A pointer to a root node, possibly NULL.
@@ -100,6 +96,11 @@ static void eval_node(node_t *(nptr)) {
         if (nptr->node_type == NT_LEAF) return;
 
 
+        // handle special case in binary for if the types arent the same when you are adding.
+        if (nptr->children[0]->type != nptr->children[1]->type) {
+            handle_error(ERR_TYPE);
+            return;
+        }
 
         if (nptr->tok == TOK_QUESTION) {
             if (nptr->children[0]->type == INT_TYPE || nptr->children[0]->type == STRING_TYPE || (nptr->children[1]->type == INT_TYPE && nptr->children[2]->type == BOOL_TYPE)) {
@@ -115,8 +116,6 @@ static void eval_node(node_t *(nptr)) {
                 }
             }
         } else {
-
-
 
         // is the nptr ttoken a question mark?
             // if so, is the first child at zero, true or false?
@@ -135,8 +134,7 @@ static void eval_node(node_t *(nptr)) {
                 }
             }
         }
-
- 
+    
         if (nptr->tok == TOK_PLUS) {
             if (nptr->type == INT_TYPE) {
                 nptr->val.ival = nptr->children[0]->val.ival + nptr->children[1]->val.ival;
@@ -271,9 +269,7 @@ static void eval_node(node_t *(nptr)) {
             if (nptr->type == INT_TYPE) {
                 nptr->val.ival = nptr->children[0]->val.ival == nptr->children[1]->val.ival;
             } else if (nptr->type == STRING_TYPE) {
-              
-
-
+            
             } else if (nptr->type == BOOL_TYPE) {
                 if (nptr->children[0]->type == BOOL_TYPE && nptr->children[1]->type == BOOL_TYPE) {
                     handle_error(ERR_TYPE);

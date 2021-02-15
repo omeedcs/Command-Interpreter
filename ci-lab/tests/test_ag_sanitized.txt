@@ -1,0 +1,171 @@
+3 # d
+327 # x
+2147483647 # X
+true # B
+false # b
+15 # b
+true # x
+(5 + 3)
+(5 - 3)
+(5 * 3)
+(5 * 0)
+(5 / 3)
+(4 / 2)
+(5 % 3)
+(5 % 2)
+(5 < 3) # b
+(5 > 3) # b
+(5 < 5) # b
+(5 ~ 5) # b
+(true & false) # b
+(true & true) # b
+(true | false) # b
+(false | false) # b
+((1 + 2) + 3)
+((((5 * 4) / 3) + 2) - 1)
+(((0 - 5) + 6) * ((0 - 7) / 2))
+(((0 - 10) % 3) + (10 % (0 - 4)))
+((3 - 5) ~ (0 - 2)) # b
+((20 % 7) ~ (3 * 2)) # b
+(true & (5 < 4)) # b
+((false & true) | (true & false)) # b
+((0 * 0) / 0)
+(1 + (5 / 0))
+((5 - 5) % (3 - 3))
+(1 0)
+(1 + 2) + 3)
+1 + 1
+(1 +
+(- 1)
+(1 *)
+1 + 1)
+(1 + - 1)
+(1 + 1 0)
+(5 / 0) + 1
+(true + 3)
+(true + true)
+((1 > 2) + (1 / 0))
+(& true)
+(| true false)
+true | false
+(true & true & false)
+(true & ((1 / 0) > 1))
+(1 & false)
+(5 & 3)
+(true > false)
+(true < 1)
+(true ~ false) # b
+(_ 5)
+(_ (_ 5))
+(_ 0)
+(! true) #b
+(!(! false)) #b
+(_ (5))
+((_ 5) - (_ 5))
+(_ (_ (_ (_ 0))))
+(_2147483648) # X
+((! true) & false) # b
+(! (! (! (! false)))) # b
+_
+_ 0
+(_)
+(_ _ 1)
+(1 _)
+(_ 1 0)
+(_ true)
+(_ (1))
+(! true) !
+!(true)
+true !
+(! 5)
+(true ? 1 : 2)
+(false ? true : false) # b
+((5 > 3) ? (2 * 5) : (3 + 1))
+((! (! true)) ? (! true) : true) # b
+(1 ~ ((2 > 3) ? (4 - 3) : (2 + 1))) # b
+(true ? 5 : (5 / 0))
+(false ? (5 % 0) : 1)
+(? 1 : 2)
+(true ? 1 : 2
+(true ? 1 2)
+(true ? 1 : 2 false)
+(true ? 1 : false)
+(1 ? 1 : 2)
+((5 > 0) ? (5 / 0) : (5 > 0))
+"a"
+"abc"
+"! true"
+""
+" "
+("ab")
+("abc" + "de")
+("" + "ab")
+(("a" + "b") + ("c" + "d"))
+(_ "abc")
+(_ "a")
+(_ "!!!")
+(_ "")
+(_ (_ "abc"))
+("abc" * 5)
+("abc" * 0)
+("" * 5)
+("abc" * 50)
+("abc" ~ "abd") # b
+("ABC" ~ "ABC") # b
+("abcd" > "abc") # b
+("eee" < "eed") # b
+(" " < "  ") # b
+(("abc" * 5) > ((_ "cba") * 4)) # b
+("("a")")
+(_ "_ ")_
+("abc" & "abc)
+("abc > "a)
+("abc" + _)
+("abc" + 1)
+(true + "abc")
+(5 * "abc")
+("abc" * (_5))
+("abc" / "abc")
+("abc" % 0)
+a = 5
+a
+@p
+b = true
+b
+@p
+x1 = 5
+x2 = true
+@p
+x2 = x1
+x1 = x2
+@p
+x = 10
+(x + x)
+y = (x * 2)
+x = (y - x)
+z = "abc"
+z = (z * x)
+@p
+abc = 123
+cba = "123"
+@p
+abd = (_ abc)
+dba = (_ cba)
+@p
+abb = (abc * abd)
+bba = (cba + dba)
+@p
+abc = ((abc > abd) ? cba : dba)
+bba = ((cba > dba) ? abb : abd)
+@p
+a =
+a = ()
+a = a
+a = 0
+b = (b / a)
+b = (10 / a)
+1 = a
+a = b + a
+!! = a
+@p
+@q
