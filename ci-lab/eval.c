@@ -96,7 +96,7 @@ static void eval_node(node_t *(nptr)) {
         if (nptr->node_type == NT_LEAF) return;
 
 
-        if (nptr->children[0]->type == BOOL_TYPE && nptr->children[1]->type == INT_TYPE) {
+        if (nptr->tok == TOK_PLUS && nptr->children[0]->type == BOOL_TYPE && nptr->children[1]->type == INT_TYPE) {
             handle_error(ERR_TYPE);
             return;
         }
