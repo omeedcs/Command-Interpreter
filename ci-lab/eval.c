@@ -45,6 +45,7 @@ static void infer_type(node_t *nptr) {
     }
 
     if (nptr->tok == TOK_QUESTION) {
+        nptr->type = nptr->children[1]->type;
         infer_type(nptr->children[2]);
     }
     return;
@@ -107,10 +108,25 @@ static void eval_node(node_t *(nptr)) {
                 eval_node(nptr->children[0]);
                 if (nptr->children[0]->val.bval == 1) {
                     eval_node(nptr->children[1]);
-                    nptr->val.ival = nptr->children[1]->val.ival;
+                    if (nptr->type == STRING_TYPE) {
+                        nptr->val.sval = malloc(strlen(nptr->children[1]->val.sval) + 1);
+                        strcpy(nptr->val.sval, nptr->children[1]->val.sval);
+                    } else if (nptr->type == INT_TYPE) {
+                        nptr->val.ival = nptr->children[1]->val.ival;
+                    } else if (nptr->type == BOOL_TYPE) {
+                        nptr->val.bval = nptr->children[1]->val.bval;
+                    }
+                    
                 } else {
                     eval_node(nptr->children[2]);
-                    nptr->val.ival = nptr->children[2]->val.ival;
+                    if (nptr->type == STRING_TYPE) {
+                        nptr->val.sval = malloc(strlen(nptr->children[2]->val.sval) + 1);
+                        strcpy(nptr->val.sval, nptr->children[2]->val.sval);
+                    } else if (nptr->type == INT_TYPE) {
+                        nptr->val.ival = nptr->children[2]->val.ival;
+                    } else if (nptr->type == BOOL_TYPE) {
+                        nptr->val.bval = nptr->children[2]->val.bval;
+                    }
                 }
             }
         } else {

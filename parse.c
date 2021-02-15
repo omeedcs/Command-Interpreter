@@ -338,9 +338,10 @@ void cleanup(node_t *nptr) {
     if (nptr->type == STRING_TYPE) {
         free(nptr->val.sval);
     } 
-    // if (nptr->type == ID_TYPE) {
-        // free(nptr->id);
-    // }
+
+    if (nptr->type == ID_TYPE) {
+        free(nptr->val.sval);
+    }
     // joyce recommendation-> handle ID freeing as well.
 
     // recurse to the left
